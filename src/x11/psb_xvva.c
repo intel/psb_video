@@ -231,7 +231,9 @@ VAStatus psb_deinit_xvideo(VADriverContextP ctx)
         pthread_join(driver_data->xrandr_thread_id, NULL);
         driver_data->xrandr_thread_id = 0;
     }
-    psb_xrandr_deinit();
+    if ((output->textured_portID) || (output->overlay_portID)) {
+        psb_xrandr_deinit();
+    }
 
     output->using_port = 0;
     output->output_drawable = 0;
