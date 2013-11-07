@@ -192,7 +192,6 @@ VAStatus vld_dec_process_slice_data(context_DEC_p ctx, object_buffer_p obj_buffe
 
     ASSERT((obj_buffer->type == VASliceDataBufferType) || (obj_buffer->type == VAProtectedSliceDataBufferType));
 
-    ASSERT(ctx->pic_params);
     ASSERT(ctx->slice_param_list_idx);
 
 #if 0
