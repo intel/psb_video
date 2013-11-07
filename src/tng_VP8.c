@@ -696,7 +696,6 @@ static VAStatus tng__VP8_process_picture_param(context_VP8_p ctx, object_buffer_
 static VAStatus tng__VP8_process_probility_param(context_VP8_p ctx, object_buffer_p obj_buffer) {
     ASSERT(obj_buffer->type == VAProbabilityBufferType);
     ASSERT(obj_buffer->num_elements == 1);
-    ASSERT(obj_buffer->size == sizeof(VANodeProbabilityBufferVP8));
 
     if ((obj_buffer->num_elements != 1) ||
         (obj_buffer->size != sizeof(VAProbabilityDataBufferVP8))) {
