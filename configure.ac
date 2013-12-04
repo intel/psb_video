@@ -32,6 +32,11 @@ AC_ARG_ENABLE(baytrail,
                     [build with baytrail platform support only @<:@default=yes@:>@])],
     [], [enable_baytrail="yes"])
 
+AC_ARG_ENABLE(va_egl,
+    [AC_HELP_STRING([--enable-va-egl],
+                    [build with EGL platform support @<:@default=no@:>@])],
+    [], [enable_va_egl="no"])
+
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 AC_PROG_CC
@@ -59,9 +64,10 @@ PKG_CHECK_MODULES([XV], [xv])
 #fi
 
 BAYTRAIL="$enable_baytrail"
-
+VA_EGL="$enable_va_egl"
 
 AM_CONDITIONAL(BAYTRAIL, test "$BAYTRAIL" = "yes")
+AM_CONDITIONAL(VA_EGL, test "$VA_EGL" = "yes")
 
 pkgconfigdir=${libdir}/pkgconfig
 AC_SUBST(pkgconfigdir)

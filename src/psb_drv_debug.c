@@ -29,7 +29,9 @@
 
 #include <va/va_backend.h>
 #include <va/va_backend_tpi.h>
+#ifdef VA_EGL
 #include <va/va_backend_egl.h>
+#endif
 #include <va/va_drmcommon.h>
 
 #include "psb_drv_video.h"
