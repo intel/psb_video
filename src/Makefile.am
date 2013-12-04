@@ -63,6 +63,10 @@ else
 CFLAGS += -O1 -Wall -ffloat-store -fvisibility=hidden -DPSBVIDEO_MRST -DPSBVIDEO_MFLD -DPSBVIDEO_MRFL -D_FOR_FPGA_ -DPSBVIDEO_MRFL_DEC
 endif
 
+if VA_EGL
+CFLAGS += -DVA_EGL
+endif
+
 symbol_info:	pvr_drv_video.la
 	objdump -T .libs/pvr_drv_video.so | grep UND | sort -k 5 > Linker_dependencies.txt
 	objdump -T .libs/pvr_drv_video.so | grep -v UND | sort -k 5 > Linker_exports.txt

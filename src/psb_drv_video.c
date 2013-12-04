@@ -29,7 +29,9 @@
 
 #include <va/va_backend.h>
 #include <va/va_backend_tpi.h>
+#ifdef VA_EGL
 #include <va/va_backend_egl.h>
+#endif
 #ifdef PSBVIDEO_MRFL_VPP
 #include <va/va_backend_vpp.h>
 #endif
@@ -3044,7 +3046,9 @@ VAStatus psb_Terminate(VADriverContextP ctx)
 
     pthread_mutex_destroy(&driver_data->drm_mutex);
     free(ctx->pDriverData);
+#ifdef VA_EGL
     free(ctx->vtable_egl);
+#endif
     free(ctx->vtable_tpi);
 
     ctx->pDriverData = NULL;
@@ -3059,7 +3063,9 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
 {
     psb_driver_data_p driver_data;
     struct VADriverVTableTPI *tpi;
+#ifdef VA_EGL
     struct VADriverVTableEGL *va_egl;
+#endif
     int result;
     if (psb_video_trace_fp) {
         /* make gdb always stop here */
@@ -3151,20 +3157,23 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
     tpi->vaPutSurfaceBuf = psb_PutSurfaceBuf;
     //tpi->vaSetTimestampForSurface = psb_SetTimestampForSurface;
 
+#ifdef VA_EGL
     ctx->vtable_egl = calloc(1, sizeof(struct VADriverVTableEGL));
     if (NULL == ctx->vtable_egl)
         return VA_STATUS_ERROR_ALLOCATION_FAILED;
 
     va_egl = (struct VADriverVTableEGL *)ctx->vtable_egl;
     va_egl->vaGetEGLClientBufferFromSurface = psb_GetEGLClientBufferFromSurface;
-
+#endif
     driver_data = (psb_driver_data_p) calloc(1, sizeof(*driver_data));
     ctx->pDriverData = (unsigned char *) driver_data;
     if (NULL == driver_data) {
         if (ctx->vtable_tpi)
             free(ctx->vtable_tpi);
+#ifdef VA_EGL
         if (ctx->vtable_egl)
             free(ctx->vtable_egl);
+#endif
         return VA_STATUS_ERROR_ALLOCATION_FAILED;
     }
 
