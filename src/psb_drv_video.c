@@ -3265,8 +3265,8 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
     if (IS_MRFL(driver_data) || IS_BAYTRAIL(driver_data)) {
         drv_debug_msg(VIDEO_DEBUG_GENERAL, "merrifield VXD392 decoder\n");
 	driver_data->profile2Format[VAProfileVP8Version0_3][VAEntrypointVLD] = &tng_VP8_vtable;
-        driver_data->profile2Format[VAProfileJPEGBaseline][VAEntrypointVLD] = &tng_JPEG_vtable;
 #ifndef BAYTRAIL
+        driver_data->profile2Format[VAProfileJPEGBaseline][VAEntrypointVLD] = &tng_JPEG_vtable;
         driver_data->profile2Format[VAProfileMPEG4Simple][VAEntrypointVLD] = &pnw_MPEG4_vtable;
         driver_data->profile2Format[VAProfileMPEG4AdvancedSimple][VAEntrypointVLD] = &pnw_MPEG4_vtable;
 
