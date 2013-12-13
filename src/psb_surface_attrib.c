@@ -538,7 +538,7 @@ VAStatus  psb_CreateSurfaceFromUserspace(
 {
     INIT_DRIVER_DATA;
     VAStatus vaStatus = VA_STATUS_SUCCESS;
-#ifdef ANDROID
+
     unsigned int *vaddr;
     unsigned long fourcc;
     int surfaceID;
@@ -585,12 +585,17 @@ VAStatus  psb_CreateSurfaceFromUserspace(
             break;
         }
 
+#ifdef ANDROID
         if (attribute_tpi->type == VAExternalMemoryNoneCacheUserPointer)
             vaStatus = psb_surface_create_from_ub(driver_data, width, height, fourcc,
                     attribute_tpi, psb_surface, vaddr, PSB_USER_BUFFER_UNCACHED);
         else
             vaStatus = psb_surface_create_from_ub(driver_data, width, height, fourcc,
                     attribute_tpi, psb_surface, vaddr, 0);
+#elif
+	vaStatus = psb_surface_create_from_ub(driver_data, width, height, fourcc,
+		attribute_tpi, psb_surface, vaddr, 0);
+#endif
         obj_surface->psb_surface = psb_surface;
 
         if (VA_STATUS_SUCCESS != vaStatus) {
@@ -611,7 +616,6 @@ VAStatus  psb_CreateSurfaceFromUserspace(
             psb__destroy_surface(driver_data, obj_surface);
         }
     }
-#endif
     return vaStatus;
 }
 
