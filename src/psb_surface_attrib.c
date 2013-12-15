@@ -592,7 +592,7 @@ VAStatus  psb_CreateSurfaceFromUserspace(
         else
             vaStatus = psb_surface_create_from_ub(driver_data, width, height, fourcc,
                     attribute_tpi, psb_surface, vaddr, 0);
-#elif
+#else
 	vaStatus = psb_surface_create_from_ub(driver_data, width, height, fourcc,
 		attribute_tpi, psb_surface, vaddr, 0);
 #endif
