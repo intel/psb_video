@@ -3240,7 +3240,6 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
     psb_init_surface_pvr2dbuf(driver_data);
 #endif
 
-#if 0
     if (VA_STATUS_SUCCESS != psb_initOutput(ctx)) {
         pthread_mutex_destroy(&driver_data->drm_mutex);
         psb__deinitDRM(ctx);
@@ -3248,7 +3247,7 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
         ctx->pDriverData = NULL;
         return VA_STATUS_ERROR_UNKNOWN;
     }
-#endif
+
     driver_data->msvdx_context_base = (((unsigned int) getpid()) & 0xffff) << 16;
 #ifdef PSBVIDEO_MRFL
     if (IS_MRFL(driver_data)) {
