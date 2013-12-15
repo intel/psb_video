@@ -266,7 +266,7 @@ extern "C" {
 
 #else
 #define MEMIO_CHECK_ALIGNMENT(vpMem)            \
-        IMG_ASSERT(((IMG_UINT32)vpMem & 0x3) == 0)
+        IMG_ASSERT(((IMG_LONG)vpMem & 0x3) == 0)
 #endif
 
     /*!
@@ -281,13 +281,13 @@ extern "C" {
 
 #define MEMIO_READ_FIELD(vpMem, field)                                                                                                                                                          \
         ( MEMIO_CHECK_ALIGNMENT(vpMem),                                                                                                                                                                 \
-        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) & field##_MASK) >> field##_SHIFT)) )
+        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) & field##_MASK) >> field##_SHIFT)) )
 
 #else
 
 #if 1
 #define MEMIO_READ_FIELD(vpMem, field)                                                                                                                                                              \
-            ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) & field##_MASK) >> field##_SHIFT))
+            ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) & field##_MASK) >> field##_SHIFT))
 
 #else
 
@@ -310,12 +310,12 @@ extern "C" {
 
 #define MEMIO_READ_TABLE_FIELD(vpMem, field, ui32TabIndex)                                                                                                                                                                                              \
         ( MEMIO_CHECK_ALIGNMENT(vpMem), IMG_ASSERT((ui32TabIndex < field##_NO_ENTRIES) || (field##_NO_ENTRIES == 0)),                                                                           \
-        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & field##_MASK) >> field##_SHIFT)) )       \
+        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & field##_MASK) >> field##_SHIFT)) )       \
 
 #else
 
 #define MEMIO_READ_TABLE_FIELD(vpMem, field, ui32TabIndex)                                                                                                                                                                                              \
-        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & field##_MASK) >> field##_SHIFT))         \
+        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & field##_MASK) >> field##_SHIFT))         \
 
 #endif
 
@@ -330,12 +330,12 @@ extern "C" {
 
 #define MEMIO_READ_REPEATED_FIELD(vpMem, field, ui32RepIndex)                                                                                                                                                                                                                                                           \
         ( MEMIO_CHECK_ALIGNMENT(vpMem), IMG_ASSERT(ui32RepIndex < field##_NO_REPS),                                                                                                                                                                                                                     \
-        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE)))) )    \
+        ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE)))) )    \
 
 #else
 
 #define MEMIO_READ_REPEATED_FIELD(vpMem, field, ui32RepIndex)                                                                                                                                                                                                                                                           \
-        ( (IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE))) )    \
+        ( (IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE))) )    \
 
 #endif
     /*!
@@ -348,12 +348,12 @@ extern "C" {
 
 #define MEMIO_READ_TABLE_REPEATED_FIELD(vpMem, field, ui32TabIndex, ui32RepIndex)                                                                                                                                                                                                                                                                               \
     ( MEMIO_CHECK_ALIGNMENT(vpMem), IMG_ASSERT((ui32TabIndex < field##_NO_ENTRIES) || (field##_NO_ENTRIES == 0)), IMG_ASSERT(ui32RepIndex < field##_NO_REPS), \
-    ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE)))) )      \
+    ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE)))) )      \
 
 #else
 
 #define MEMIO_READ_TABLE_REPEATED_FIELD(vpMem, field, ui32TabIndex, ui32RepIndex)                                                                                                                                                                                                                                                                               \
-    ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE))))        \
+    ((IMG_UINT32)(((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * ui32TabIndex)))) & (field##_MASK >> (ui32RepIndex * field##_SIZE))) >> (field##_SHIFT - (ui32RepIndex * field##_SIZE))))        \
 
 #endif
 
@@ -365,14 +365,14 @@ extern "C" {
     ******************************************************************************/
 #define MEMIO_WRITE_FIELD(vpMem, field, ui32Value)                                                                                                              \
         MEMIO_CHECK_ALIGNMENT(vpMem);                                                                                                                                           \
-        (*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) =                                                                           \
-        ((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) & (field##_TYPE)~field##_MASK) |           \
-                (field##_TYPE)(( (IMG_UINT32) (ui32Value) << field##_SHIFT) & field##_MASK);
+        (*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) =                                                                           \
+        ((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) & (field##_TYPE)~field##_MASK) |           \
+                (field##_TYPE)(( (IMG_LONG) (ui32Value) << field##_SHIFT) & field##_MASK);
 
 #define MEMIO_WRITE_FIELD_LITE(vpMem, field, ui32Value)                                                                                                 \
         MEMIO_CHECK_ALIGNMENT(vpMem);                                                                                                                                           \
-         (*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) =                                                                          \
-        ((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) |                                          \
+         (*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) =                                                                          \
+        ((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) |                                          \
                 (field##_TYPE) (( (IMG_UINT32) (ui32Value) << field##_SHIFT)) );
 
     /*!
@@ -382,8 +382,8 @@ extern "C" {
     ******************************************************************************/
 #define MEMIO_WRITE_TABLE_FIELD(vpMem, field, ui32TabIndex, ui32Value)                                                                                                                                          \
         MEMIO_CHECK_ALIGNMENT(vpMem); IMG_ASSERT(((ui32TabIndex) < field##_NO_ENTRIES) || (field##_NO_ENTRIES == 0));                                                   \
-        (*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) =                                                                               \
-                ((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) & (field##_TYPE)~field##_MASK) |       \
+        (*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) =                                                                               \
+                ((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) & (field##_TYPE)~field##_MASK) |       \
                 (field##_TYPE)(( (IMG_UINT32) (ui32Value) << field##_SHIFT) & field##_MASK);
 
     /*!
@@ -394,8 +394,8 @@ extern "C" {
     ******************************************************************************/
 #define MEMIO_WRITE_REPEATED_FIELD(vpMem, field, ui32RepIndex, ui32Value)                                                                                                                                       \
         MEMIO_CHECK_ALIGNMENT(vpMem); IMG_ASSERT((ui32RepIndex) < field##_NO_REPS);                                                                                                                             \
-        (*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) =                                                                                                                                                   \
-        ((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET))) & (field##_TYPE)~(field##_MASK >> ((ui32RepIndex) * field##_SIZE)) |                       \
+        (*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) =                                                                                                                                                   \
+        ((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET))) & (field##_TYPE)~(field##_MASK >> ((ui32RepIndex) * field##_SIZE)) |                       \
                 (field##_TYPE)(( (IMG_UINT32) (ui32Value) << (field##_SHIFT - ((ui32RepIndex) * field##_SIZE))) & (field##_MASK >> ((ui32RepIndex) * field##_SIZE))));
 
     /*!
@@ -406,8 +406,8 @@ extern "C" {
     ******************************************************************************/
 #define MEMIO_WRITE_TABLE_REPEATED_FIELD(vpMem, field, ui32TabIndex, ui32RepIndex, ui32Value)                                                                                                                                                                           \
         MEMIO_CHECK_ALIGNMENT(vpMem); IMG_ASSERT(((ui32TabIndex) < field##_NO_ENTRIES) || (field##_NO_ENTRIES == 0)); IMG_ASSERT((ui32RepIndex) < field##_NO_REPS);                                             \
-        (*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) =                                                                                                                                                               \
-                ((*((field##_TYPE *)(((IMG_UINT32)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) & (field##_TYPE)~(field##_MASK >> ((ui32RepIndex) * field##_SIZE))) |          \
+        (*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) =                                                                                                                                                               \
+                ((*((field##_TYPE *)(((IMG_LONG)vpMem) + field##_OFFSET + (field##_STRIDE * (ui32TabIndex))))) & (field##_TYPE)~(field##_MASK >> ((ui32RepIndex) * field##_SIZE))) |          \
                 (field##_TYPE)(( (IMG_UINT32) (ui32Value) << (field##_SHIFT - ((ui32RepIndex) * field##_SIZE))) & (field##_MASK >> ((ui32RepIndex) * field##_SIZE)));
 
 #endif

@@ -53,15 +53,16 @@ typedef char            IMG_CHAR,      *IMG_PCHAR;
 
 typedef unsigned short  IMG_UINT16,    *IMG_PUINT16;
 typedef signed short    IMG_INT16,     *IMG_PINT16;
-typedef unsigned long   IMG_UINT32,    *IMG_PUINT32;
-typedef signed long     IMG_INT32,     *IMG_PINT32;
+typedef unsigned int   IMG_UINT32,    *IMG_PUINT32;
+typedef signed int     IMG_INT32,     *IMG_PINT32;
 typedef unsigned long long IMG_UINT64, *IMG_PUINT64;
 typedef signed long long IMG_INT64,    *IMG_PINT64;
 
 typedef unsigned char	IMG_BOOL8,     *IMG_PBOOL8;
 typedef unsigned short	IMG_BOOL16,    *IMG_PBOOL16;
-typedef unsigned long	IMG_BOOL32,    *IMG_PBOOL32;
+typedef unsigned int	IMG_BOOL32,    *IMG_PBOOL32;
 
+typedef unsigned long	IMG_LONG,       *IMG_PLONG;
 
 #if defined(_WIN32)
 
@@ -94,7 +95,7 @@ typedef void                    IMG_VOID,       *IMG_PVOID;
 
 typedef IMG_INT32               IMG_RESULT;
 
-typedef IMG_UINT32      IMG_UINTPTR_T;
+typedef IMG_LONG      IMG_UINTPTR_T;
 
 typedef IMG_PVOID       IMG_HANDLE;
 

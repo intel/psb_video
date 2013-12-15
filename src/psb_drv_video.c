@@ -147,6 +147,15 @@
 
 static int psb_get_device_info(VADriverContextP ctx);
 
+unsigned long read_addr(unsigned long *virt_addr)
+{
+    return *virt_addr;
+}
+
+void write_addr(unsigned long *virt_addr, unsigned long value)
+{
+    *virt_addr = value;
+}
 
 void psb_init_surface_pvr2dbuf(psb_driver_data_p driver_data);
 void psb_free_surface_pvr2dbuf(psb_driver_data_p driver_data);
@@ -2846,8 +2855,8 @@ static VAStatus psb__initDRI(VADriverContextP ctx)
         drm_state->fd = open("/dev/dri/card0", O_RDWR);
     assert(drm_state->fd >= 0);
 #endif
-    assert(drm_state->auth_type == VA_DRM_AUTH_DRI2 ||
-           drm_state->auth_type == VA_DRM_AUTH_CUSTOM);
+//    assert(drm_state->auth_type == VA_DRM_AUTH_DRI2 ||
+//           drm_state->auth_type == VA_DRM_AUTH_CUSTOM);
 
     driver_data->drm_fd = drm_state->fd;
     driver_data->dri_dummy = 1;
@@ -3231,6 +3240,7 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
     psb_init_surface_pvr2dbuf(driver_data);
 #endif
 
+#if 0
     if (VA_STATUS_SUCCESS != psb_initOutput(ctx)) {
         pthread_mutex_destroy(&driver_data->drm_mutex);
         psb__deinitDRM(ctx);
@@ -3238,7 +3248,7 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
         ctx->pDriverData = NULL;
         return VA_STATUS_ERROR_UNKNOWN;
     }
-
+#endif
     driver_data->msvdx_context_base = (((unsigned int) getpid()) & 0xffff) << 16;
 #ifdef PSBVIDEO_MRFL
     if (IS_MRFL(driver_data)) {

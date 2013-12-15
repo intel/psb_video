@@ -794,4 +794,8 @@ int UNLOCK_HARDWARE(psb_driver_data_p driver_data);
         } \
     } while (0)
 
+unsigned long read_addr(unsigned long *virt_addr);
+
+void write_addr(unsigned long *virt_addr, unsigned long value);
+
 #endif /* _PSB_DRV_VIDEO_H_ */

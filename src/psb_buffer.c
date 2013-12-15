@@ -490,6 +490,8 @@ static void psb__trace_coded(VACodedBufferSegment *vaCodedBufSeg)
 
 #define PROFILE_H264(profile) ((profile>=VAProfileH264Baseline && profile <=VAProfileH264High) || \
                                (profile == VAProfileH264ConstrainedBaseline))
+#define tng_align_KB(x)  (((x) + (unsigned int)(0xfff)) & (~(unsigned int)(0xfff)))
+
 static void tng_get_coded_data(
     object_buffer_p obj_buffer,
     unsigned char *raw_codedbuf

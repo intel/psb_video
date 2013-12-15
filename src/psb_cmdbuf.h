@@ -316,4 +316,6 @@ int psb_cmdbuf_second_pass(object_context_p obj_context,
                            uint32_t chroma_offset
                           );
 
+void *psb_cmdbuf_alloc_space(psb_cmdbuf_p cmdbuf, uint32_t byte_size);
+
 #endif /* _PSB_CMDBUF_H_ */
