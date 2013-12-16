@@ -295,7 +295,11 @@ void *psb_x11_output_init(VADriverContextP ctx)
     /* always init CTEXTURE and COVERLAY */
     driver_data->coverlay = 1;
     driver_data->color_key = 0x11;
-#ifndef BAYTRAIL
+#ifdef BAYTRAIL
+    drv_debug_msg(VIDEO_DEBUG_GENERAL, "Baytrail Putsurface force to X11 rendering\n");
+    driver_data->output_method = PSB_PUTSURFACE_X11;
+    driver_data->coverlay = 0;
+#else
     driver_data->ctexture = 1;
 #endif
     driver_data->xrandr_dirty = 0;
