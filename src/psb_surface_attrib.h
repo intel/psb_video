@@ -26,7 +26,7 @@
 #ifndef _PSB_SURFACE_ATTRIB_H_
 #define _PSB_SURFACE_ATTRIB_H_
 
-#include <va/va_tpi.h>
+#include <va/va.h>
 #include "psb_drv_video.h"
 #include "psb_surface.h"
 

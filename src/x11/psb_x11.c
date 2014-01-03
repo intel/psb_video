@@ -295,8 +295,9 @@ void *psb_x11_output_init(VADriverContextP ctx)
     /* always init CTEXTURE and COVERLAY */
     driver_data->coverlay = 1;
     driver_data->color_key = 0x11;
+#ifndef BAYTRAIL
     driver_data->ctexture = 1;
-
+#endif
     driver_data->xrandr_dirty = 0;
     driver_data->xrandr_update = 0;
 
@@ -362,7 +363,7 @@ void psb_x11_output_deinit(VADriverContextP ctx)
 #else
     INIT_DRIVER_DATA;
     INIT_OUTPUT_PRIV;
-    struct dri_state *dri_state = (struct dri_state *)ctx->dri_state;
+    struct drm_state *drm_state = (struct drm_state *)ctx->drm_state;
 
     psb_x11_freeWindowClipBoxList(output->pClipBoxList);
     output->pClipBoxList = NULL;
@@ -373,10 +374,11 @@ void psb_x11_output_deinit(VADriverContextP ctx)
     }
 
     psb_deinit_xvideo(ctx);
-
+#ifndef BAYTRAIL
     /* close dri fd and release all drawable buffer */
     if (driver_data->ctexture == 1)
-        (*dri_state->close)(ctx);
+        (*drm_state->close)(ctx);
+#endif
 #endif
 }
 
@@ -445,7 +447,7 @@ static int pnw_check_output_method(VADriverContextP ctx, object_surface_p obj_su
 
     if (IS_MFLD(driver_data) &&
         (driver_data->xrandr_dirty & PSB_NEW_ROTATION)) {
-        psb_RecalcRotate(ctx);
+        psb_RecalcAlternativeOutput(ctx);
         driver_data->xrandr_dirty &= ~PSB_NEW_ROTATION;
     }
 
@@ -505,11 +507,15 @@ VAStatus psb_PutSurface(
 
     if ((driver_data->output_method == PSB_PUTSURFACE_CTEXTURE) ||
         (driver_data->output_method == PSB_PUTSURFACE_FORCE_CTEXTURE)) {
+#ifdef BAYTRAIL
+        drv_debug_msg(VIDEO_DEBUG_GENERAL, "No client Texture support for Baytrail\n");
+#else
         drv_debug_msg(VIDEO_DEBUG_GENERAL, "Using client Texture for PutSurface\n");
         psb_putsurface_ctexture(ctx, surface, draw,
                                 srcx, srcy, srcw, srch,
                                 destx, desty, destw, desth,
                                 flags);
+#endif
     } else if ((driver_data->output_method == PSB_PUTSURFACE_COVERLAY) ||
                (driver_data->output_method == PSB_PUTSURFACE_FORCE_COVERLAY)) {
         drv_debug_msg(VIDEO_DEBUG_GENERAL, "Using client Overlay for PutSurface\n");

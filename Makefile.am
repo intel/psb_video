@@ -22,4 +22,4 @@
 #
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src fw
-
+LOCAL_CFLAGS = -I/opt/libwsbm/master/include/wsbm/

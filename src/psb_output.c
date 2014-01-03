@@ -2081,7 +2081,9 @@ VAStatus psb_SetDisplayAttributes(
 {
     INIT_DRIVER_DATA;
     VAStatus vaStatus = VA_STATUS_SUCCESS;
+#ifndef BAYTRAIL
     struct psb_texture_s *texture_priv = &driver_data->ctexture_priv;
+#endif
     PsbPortPrivPtr overlay_priv = (PsbPortPrivPtr)(&driver_data->coverlay_priv);
     int j, k;
 
@@ -2101,28 +2103,36 @@ VAStatus psb_SetDisplayAttributes(
             /* 0~100 ==> -50*(1<<10) ~ 50*(1<<10)*/
             driver_data->brightness.value = (p->value - 50) * (1 << 10);
             /* 0~100 ==> -50~50 */
+#ifndef BAYTRAIL
             overlay_priv->brightness.Value = texture_priv->brightness.Value = p->value - 50;
+#endif
             update_coeffs = 1;
             break;
         case VADisplayAttribContrast:
             /* 0~100 ==> 0 ~ 2*(1<<25) */
             driver_data->contrast.value = (p->value / 50) * (1 << 25);
             /* 0~100 ==> -100~100 */
+#ifndef BAYTRAIL
             overlay_priv->contrast.Value = texture_priv->contrast.Value = p->value * 2 - 100;
+#endif
             update_coeffs = 1;
             break;
         case VADisplayAttribHue:
             /* 0~100 ==> -30*(1<<25) ~ 30*(1<<25) */
             driver_data->hue.value = ((p->value * 2 - 100) * 3 / 10) * (1 << 25);
             /* 0~100 ==> -30~30 */
+#ifndef BAYTRAIL
             overlay_priv->hue.Value = texture_priv->hue.Value = (p->value * 2 - 100) * 3 / 10;
+#endif
             update_coeffs = 1;
             break;
         case VADisplayAttribSaturation:
             /* 0~100 ==> 0 ~ 2*(1<<25) */
             driver_data->contrast.value = (p->value / 50) * (1 << 25);
             /* 0~100 ==> 100~200 */
+#ifndef BAYTRAIL
             overlay_priv->saturation.Value = texture_priv->saturation.Value = p->value + 100;
+#endif
             update_coeffs = 1;
             break;
         case VADisplayAttribBackgroundColor:
@@ -2189,7 +2199,9 @@ VAStatus psb_SetDisplayAttributes(
     if (update_coeffs) {
         /* TODO */
 #ifndef ANDROID
+#ifndef  BAYTRAIL
         texture_priv->update_coeffs = 1;
+#endif
 #endif
     }
 

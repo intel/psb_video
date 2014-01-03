@@ -21,5 +21,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 AUTOMAKE_OPTIONS = foreign
+if BAYTRAIL
+SUBDIRS = msvdx
+else
 SUBDIRS = topazsc topazhp msvdx
-
+endif

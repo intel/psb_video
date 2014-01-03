@@ -27,6 +27,11 @@ AM_INIT_AUTOMAKE([dist-bzip2])
 
 AM_CONFIG_HEADER([src/config.h])
 
+AC_ARG_ENABLE(baytrail,
+    [AC_HELP_STRING([--enable-baytrail],
+                    [build with baytrail platform support only @<:@default=yes@:>@])],
+    [], [enable_baytrail="yes"])
+
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 AC_PROG_CC
@@ -40,6 +45,23 @@ PKG_CHECK_MODULES([DRM], [libdrm])
 PKG_CHECK_MODULES([WSBM], [libwsbm])
 PKG_CHECK_MODULES([LIBVA], [libva])
 PKG_CHECK_MODULES([XV], [xv])
+
+#AC_ARG_ENABLE(valleyview,
+#    AS_HELP_STRING([--enable-valleyview],
+#                   [limit the build to only Valleyview platform]),
+#    [enable_valleyview=$enableval], [enable_valleyview=no])
+
+#BAYTRAIL=0
+#if test $enable_valleyview = yes; then
+#    BAYTRAIL=1
+#    AC_DEFINE(BAYTRAIL, $BAYTRAIL,
+#        [Define BAYTRAIL to 1 if --enable-valleyview arg is given])
+#fi
+
+BAYTRAIL="$enable_baytrail"
+
+
+AM_CONDITIONAL(BAYTRAIL, test "$BAYTRAIL" = "yes")
 
 pkgconfigdir=${libdir}/pkgconfig
 AC_SUBST(pkgconfigdir)

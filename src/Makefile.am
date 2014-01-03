@@ -25,10 +25,23 @@
 pvr_drv_video_la_LTLIBRARIES = pvr_drv_video.la
 pvr_drv_video_ladir = /usr/lib/dri
 pvr_drv_video_la_LDFLAGS = -lwsbm -pthread -module -avoid-version -Wl,--no-undefined
+if BAYTRAIL
+pvr_drv_video_la_LIBADD = -ldrm -lX11 -lXrandr -lva-x11 -lXv -lm -lXext
+else
 pvr_drv_video_la_LIBADD = -ldrm -lX11 -lXrandr -lva-x11 -lXv -lm -lXext -lpvr2d
+endif
 AM_CFLAGS = -DDEBUG -DLINUX -I$(top_srcdir)/src/hwdefs $(DRM_CFLAGS) 
 
 
+if BAYTRAIL
+pvr_drv_video_la_SOURCES = psb_drv_video.c object_heap.c psb_buffer.c psb_buffer_dm.c psb_cmdbuf.c psb_surface.c \
+		vc1_vlc.c vc1_idx.c psb_ws_driver.c pnw_rotate.c\
+		psb_output.c  psb_overlay.c psb_surface_attrib.c psb_drv_debug.c \
+		x11/psb_x11.c x11/psb_coverlay.c x11/psb_xrandr.c x11/psb_xvva.c \
+		tng_VP8.c tng_cmdbuf.c tng_jpegdec.c tng_vld_dec.c tng_yuv_processor.c
+#		vc1_ap_i.c vc1_ap_p.c vc1_ap_utils.c vc1_bitplane.c \
+#		vc1_shiftreg.c vc1_spmp.c vc1_utils.c
+else
 pvr_drv_video_la_SOURCES = psb_drv_video.c object_heap.c psb_buffer.c psb_buffer_dm.c psb_cmdbuf.c psb_surface.c \
 		vc1_vlc.c vc1_idx.c psb_ws_driver.c \
 		pnw_hostheader.c pnw_hostcode.c pnw_rotate.c\
@@ -42,9 +55,13 @@ pvr_drv_video_la_SOURCES = psb_drv_video.c object_heap.c psb_buffer.c psb_buffer
 		psb_surface_attrib.c psb_drv_debug.c tng_jpegdec.c tng_vld_dec.c tng_yuv_processor.c
 #		vc1_ap_i.c vc1_ap_p.c vc1_ap_utils.c vc1_bitplane.c \
 #		vc1_shiftreg.c vc1_spmp.c vc1_utils.c
+endif
 
-
-CFLAGS = -O1 -Wall -ffloat-store -fvisibility=hidden -DPSBVIDEO_MRST -DPSBVIDEO_MFLD -DPSBVIDEO_MRFL -D_FOR_FPGA_ -DPSBVIDEO_MRFL_DEC
+if BAYTRAIL
+CFLAGS += -Wall -ffloat-store -fvisibility=hidden -DPSBVIDEO_VXD392 -DBAYTRAIL
+else
+CFLAGS += -O1 -Wall -ffloat-store -fvisibility=hidden -DPSBVIDEO_MRST -DPSBVIDEO_MFLD -DPSBVIDEO_MRFL -D_FOR_FPGA_ -DPSBVIDEO_MRFL_DEC
+endif
 
 symbol_info:	pvr_drv_video.la
 	objdump -T .libs/pvr_drv_video.so | grep UND | sort -k 5 > Linker_dependencies.txt

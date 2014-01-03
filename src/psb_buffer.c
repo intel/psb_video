@@ -35,15 +35,11 @@
 #include <unistd.h>
 #include <wsbm/wsbm_manager.h>
 
-#ifdef ANDROID
 #ifdef BAYTRAIL
 #include <linux/vxd_drm.h>
 #else
 #include <ttm/ttm_placement.h>
 #include <linux/psb_drm.h>
-#endif
-#else
-#include <psb_drm.h>
 #endif
 
 #include "psb_def.h"
@@ -58,7 +54,10 @@
 #include "tng_jpegES.h"
 #endif
 
+#ifdef ANDROID
 #include "linux/vsp_fw.h"
+#endif
+
 /*
  * Create buffer
  */
@@ -157,9 +156,9 @@ VAStatus psb_buffer_create(psb_driver_data_p driver_data,
 #ifndef ANDROID
     if(!(placement & WSBM_PL_FLAG_SYSTEM)) {
         //drv_debug_msg(VIDEO_DEBUG_GENERAL, "%s: buffer->pl_flags 0x%08x\n", __func__, placement);
-        placement &= ~WSBM_PL_MASK_MEM;
-        placement &= ~WSBM_PL_FLAG_NO_EVICT;
-        placement |= TTM_PL_FLAG_VRAM;
+        //placement &= ~WSBM_PL_MASK_MEM;
+        //placement &= ~WSBM_PL_FLAG_NO_EVICT;
+        //placement |= TTM_PL_FLAG_VRAM;
         //drv_debug_msg(VIDEO_DEBUG_GENERAL, "%s: repleace buffer->pl_flags 0x%08x\n", __func__, placement);
     }
 #endif

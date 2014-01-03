@@ -36,7 +36,7 @@
 
 #include "psb_drv_video.h"
 #include <va/va_dec_vp8.h>
-
+#include <img_types.h>
 
 extern struct format_vtable_s tng_VP8_vtable;
 

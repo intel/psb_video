@@ -481,7 +481,7 @@ void psb_xrandr_refresh(VADriverContextP ctx)
 
     psb_xrandr_coordinate_init(ctx);
 
-    psb_RecalcRotate(ctx);
+    psb_RecalcAlternativeOutput(ctx);
     pthread_mutex_unlock(&psb_xrandr_info->psb_extvideo_mutex);
 }
 

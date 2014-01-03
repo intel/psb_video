@@ -30,7 +30,6 @@
 #define _PSB_SURFACE_H_
 
 #include <va/va.h>
-#include <va/va_tpi.h>
 #include "psb_buffer.h"
 //#include "xf86mm.h"
 

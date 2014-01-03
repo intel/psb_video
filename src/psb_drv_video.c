@@ -37,10 +37,14 @@
 #include <va/va_backend_vpp.h>
 #endif
 #include <va/va_drmcommon.h>
+#ifdef ANDROID
 #include <va/va_android.h>
+#endif
 
 #include "psb_drv_video.h"
+#ifndef BAYTRAIL
 #include "psb_texture.h"
+#endif
 #include "psb_cmdbuf.h"
 #ifndef BAYTRAIL
 #include "pnw_cmdbuf.h"
@@ -621,6 +625,7 @@ VAStatus psb_GetSurfaceAttributes(
         unsigned int num_attribs
         )
 {
+#ifndef BAYTRAIL
     DEBUG_FUNC_ENTER
 
     int i;
@@ -635,12 +640,19 @@ VAStatus psb_GetSurfaceAttributes(
         case VASurfaceAttribMemoryType:
             attrib_list[i].flags = VA_SURFACE_ATTRIB_SETTABLE | VA_SURFACE_ATTRIB_GETTABLE;
             attrib_list[i].value.type = VAGenericValueTypeInteger;
+#ifdef ANDROID
             attrib_list[i].value.value.i =
                 VA_SURFACE_ATTRIB_MEM_TYPE_VA |
                 VA_SURFACE_ATTRIB_MEM_TYPE_USER_PTR |
                 VA_SURFACE_ATTRIB_MEM_TYPE_KERNEL_DRM |
                 VA_SURFACE_ATTRIB_MEM_TYPE_ANDROID_GRALLOC |
                 VA_SURFACE_ATTRIB_MEM_TYPE_ANDROID_ION;
+#else
+            attrib_list[i].value.value.i =
+                VA_SURFACE_ATTRIB_MEM_TYPE_VA |
+                VA_SURFACE_ATTRIB_MEM_TYPE_USER_PTR |
+                VA_SURFACE_ATTRIB_MEM_TYPE_KERNEL_DRM;
+#endif
             break;
 
         case VASurfaceAttribExternalBufferDescriptor:
@@ -655,6 +667,7 @@ VAStatus psb_GetSurfaceAttributes(
     }
 
     DEBUG_FUNC_EXIT
+#endif
     return VA_STATUS_SUCCESS;
 
 }
@@ -740,12 +753,14 @@ VAStatus psb_CreateSurfaces2(
                         case VA_SURFACE_ATTRIB_MEM_TYPE_KERNEL_DRM:
                             memory_type = VAExternalMemoryKernelDRMBufffer;
                             break;
+#ifdef ANDROID
                         case VA_SURFACE_ATTRIB_MEM_TYPE_ANDROID_GRALLOC:
                             memory_type = VAExternalMemoryAndroidGrallocBuffer;
                             break;
                         case VA_SURFACE_ATTRIB_MEM_TYPE_ANDROID_ION:
                             memory_type = VAExternalMemoryIONSharedFD;
                             break;
+#endif
                         case VA_SURFACE_ATTRIB_MEM_TYPE_VA:
                             memory_type = VAExternalMemoryNULL;
                             break;
@@ -2060,12 +2075,12 @@ VAStatus psb_BeginPicture(
      if (CONTEXT_SCALING(obj_context) && obj_config->entrypoint != VAEntrypointEncSlice)
           if(VA_STATUS_SUCCESS != psb_CreateScalingSurface(obj_context, obj_surface)) {
              obj_context->msvdx_scaling = 0;
-             ALOGE("%s: fail to allocate scaling surface", __func__);
+             drv_debug_msg(VIDEO_DEBUG_ERROR,"%s: fail to allocate scaling surface", __func__);
           }
 
     if (CONTEXT_ROTATE(obj_context)) {
         if (VA_STATUS_SUCCESS != psb_CreateRotateSurface(obj_context, obj_surface, obj_context->msvdx_rotate))
-            ALOGE("%s: fail to allocate out loop surface", __func__);
+            drv_debug_msg(VIDEO_DEBUG_ERROR,"%s: fail to allocate out loop surface", __func__);
     } else {
         if (obj_surface && obj_surface->share_info) {
             obj_surface->share_info->metadata_rotate = VAROTATION2HAL(driver_data->va_rotate);
@@ -2528,6 +2543,7 @@ VAStatus psb_QuerySurfaceAttributes(VADriverContextP ctx,
     attribs[i].type = VASurfaceAttribMemoryType;
     attribs[i].value.type = VAGenericValueTypeInteger;
     attribs[i].flags = VA_SURFACE_ATTRIB_GETTABLE | VA_SURFACE_ATTRIB_SETTABLE;
+#ifdef ANDROID
     if (obj_config->entrypoint == VAEntrypointEncSlice && obj_config->profile == VAProfileVP8Version0_3) {
         attribs[i].value.value.i = VA_SURFACE_ATTRIB_MEM_TYPE_VA |
             VA_SURFACE_ATTRIB_MEM_TYPE_KERNEL_DRM |
@@ -2540,6 +2556,11 @@ VAStatus psb_QuerySurfaceAttributes(VADriverContextP ctx,
             VA_SURFACE_ATTRIB_MEM_TYPE_ANDROID_GRALLOC |
             VA_SURFACE_ATTRIB_MEM_TYPE_ANDROID_ION;
     }
+#else
+    attribs[i].value.value.i = VA_SURFACE_ATTRIB_MEM_TYPE_VA |
+        VA_SURFACE_ATTRIB_MEM_TYPE_KERNEL_DRM |
+        VA_SURFACE_ATTRIB_MEM_TYPE_USER_PTR;
+#endif
     i++;
 
     attribs[i].type = VASurfaceAttribExternalBufferDescriptor;
@@ -2814,17 +2835,17 @@ static VAStatus psb__initDRI(VADriverContextP ctx)
     INIT_DRIVER_DATA
     struct drm_state *drm_state = (struct drm_state *)ctx->drm_state;
 
-    assert(dri_state);
+    assert(drm_state);
 #ifdef _FOR_FPGA_
-    dri_state->driConnectedFlag = VA_DUMMY;
+    drm_state->auth_type = VA_DRM_AUTH_CUSTOM;
     /* ON FPGA machine, psb may co-exist with gfx's drm driver */
-    dri_state->fd = open("/dev/dri/card1", O_RDWR);
-    if (dri_state->fd < 0)
-        dri_state->fd = open("/dev/dri/card0", O_RDWR);
-    assert(dri_state->fd >= 0);
+    drm_state->fd = open("/dev/dri/card1", O_RDWR);
+    if (drm_state->fd < 0)
+        drm_state->fd = open("/dev/dri/card0", O_RDWR);
+    assert(drm_state->fd >= 0);
 #endif
-    assert(dri_state->driConnectedFlag == VA_DRI2 ||
-           dri_state->driConnectedFlag == VA_DUMMY);
+    assert(drm_state->auth_type == VA_DRM_AUTH_DRI2 ||
+           drm_state->auth_type == VA_DRM_AUTH_CUSTOM);
 
     driver_data->drm_fd = drm_state->fd;
     driver_data->dri_dummy = 1;
@@ -3128,7 +3149,7 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
     tpi = (struct VADriverVTableTPI *)ctx->vtable_tpi;
     tpi->vaCreateSurfacesWithAttribute = psb_CreateSurfacesWithAttribute;
     tpi->vaPutSurfaceBuf = psb_PutSurfaceBuf;
-	tpi->vaSetTimestampForSurface = psb_SetTimestampForSurface;
+    //tpi->vaSetTimestampForSurface = psb_SetTimestampForSurface;
 
     ctx->vtable_egl = calloc(1, sizeof(struct VADriverVTableEGL));
     if (NULL == ctx->vtable_egl)
@@ -3236,7 +3257,7 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
         drv_debug_msg(VIDEO_DEBUG_GENERAL, "merrifield VXD392 decoder\n");
 	driver_data->profile2Format[VAProfileVP8Version0_3][VAEntrypointVLD] = &tng_VP8_vtable;
         driver_data->profile2Format[VAProfileJPEGBaseline][VAEntrypointVLD] = &tng_JPEG_vtable;
-
+#ifndef BAYTRAIL
         driver_data->profile2Format[VAProfileMPEG4Simple][VAEntrypointVLD] = &pnw_MPEG4_vtable;
         driver_data->profile2Format[VAProfileMPEG4AdvancedSimple][VAEntrypointVLD] = &pnw_MPEG4_vtable;
 
@@ -3250,6 +3271,7 @@ EXPORT VAStatus __vaDriverInit_0_31(VADriverContextP ctx)
         driver_data->profile2Format[VAProfileVC1Main][VAEntrypointVLD] = &pnw_VC1_vtable;
         driver_data->profile2Format[VAProfileVC1Advanced][VAEntrypointVLD] = &pnw_VC1_vtable;
         driver_data->profile2Format[VAProfileH264ConstrainedBaseline][VAEntrypointVLD] = &pnw_H264_vtable;
+#endif
     }
 #endif
 

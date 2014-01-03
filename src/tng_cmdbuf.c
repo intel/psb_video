@@ -42,10 +42,10 @@
 #include "tng_hostcode.h"
 #include "psb_ws_driver.h"
 
-#ifdef ANDROID
+#ifndef BAYTRAIL
 #include <linux/psb_drm.h>
 #else
-#include "psb_drm.h"
+#include <linux/vxd_drm.h>
 #endif
 
 #include "tng_trace.h"

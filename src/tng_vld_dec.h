@@ -31,6 +31,7 @@
 #include "psb_surface.h"
 #include "tng_yuv_processor.h"
 #include "tng_ved_scaling.h"
+#include <img_types.h>
 
 struct context_DEC_s {
     object_context_p obj_context; /* back reference */

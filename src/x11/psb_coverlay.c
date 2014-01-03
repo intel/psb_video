@@ -821,6 +821,7 @@ static VAStatus psb_extendMode_getCoordinate(
 
 static void psb_init_subpicture(VADriverContextP ctx, PsbPortPrivPtr pPriv)
 {
+#ifndef BAYTRAIL
     INIT_DRIVER_DATA;
     struct drm_psb_register_rw_arg regs;
     unsigned int subpicture_enable_mask = REGRWBITS_DSPACNTR;
@@ -837,6 +838,7 @@ static void psb_init_subpicture(VADriverContextP ctx, PsbPortPrivPtr pPriv)
         pPriv->subpicture_enabled = 1;
         drmCommandWriteRead(driver_data->drm_fd, DRM_PSB_REGISTER_RW, &regs, sizeof(regs));
     }
+#endif
 }
 
 static void psb_clear_subpictures(
