@@ -27,6 +27,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,6 +90,7 @@ int main()
     }
     fclose(ptr);
 
+#ifndef BAYTRAIL
     /* Create stitch image of msvdx fw */
     ptr = fopen("unsigned_msvdx_fw.bin", "w");
     if (ptr == NULL) {
@@ -208,7 +213,7 @@ int main()
         fwrite(&fw_DE3.pui8Data[i*4], 4, 1, ptr);
     }
     fclose(ptr);
-
+#endif
 
     return 0;
 }

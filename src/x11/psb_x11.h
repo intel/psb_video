@@ -36,7 +36,11 @@
 
 #include <inttypes.h>
 #include "psb_drv_video.h"
+#ifndef  BAYTRAIL
 #include "psb_drm.h"
+#else
+#include <linux/vxd_drm.h>
+#endif
 #include "psb_surface.h"
 #include "psb_output.h"
 #include "psb_surface_ext.h"

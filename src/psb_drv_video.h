@@ -29,6 +29,10 @@
 #ifndef _PSB_DRV_VIDEO_H_
 #define _PSB_DRV_VIDEO_H_
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <pthread.h> /* POSIX threads headers */
 
 #include <va/va_backend.h>
@@ -40,18 +44,20 @@
 #include "psb_def.h"
 //#include "psb_drv_debug.h"
 #include "xf86drm.h"
-#ifdef ANDROID
 #ifdef BAYTRAIL
 #include <linux/vxd_drm.h>
 #else
 #include <linux/psb_drm.h>
 #endif
-#endif
 #include "psb_overlay.h"
+#ifndef BAYTRAIL
 #include "psb_texture.h"
+#endif
 #include <stdint.h>
 #ifndef ANDROID
+#ifndef BAYTRAIL
 #include <psb_drm.h>
+#endif
 #include <X11/Xlibint.h>
 #include <X11/X.h>
 #include <X11/extensions/Xv.h>
@@ -221,10 +227,11 @@ struct psb_driver_data_s {
     int coverlay_init;
     PsbPortPrivRec coverlay_priv;
 
-
+#ifndef BAYTRAIL
     /* whether the post-processing use client textureblit or not */
     int ctexture;
     struct psb_texture_s ctexture_priv;
+#endif
 
     /*
     //whether the post-processing use texstreaing or not
@@ -305,12 +312,14 @@ struct psb_driver_data_s {
     drm_psb_msvdx_decode_status_t *msvdx_decode_status;
     VASurfaceDecodeMBErrors *surface_mb_error;
 
+#ifndef BAYTRAIL
     unsigned char *hPVR2DContext;
 
     VAGenericID wrapped_surface_id[VIDEO_BUFFER_NUM];
     VAGenericID wrapped_subpic_id[VIDEO_BUFFER_NUM];
     PVR2DMEMINFO *videoBuf[VIDEO_BUFFER_NUM];
     PVR2DMEMINFO *subpicBuf[VIDEO_BUFFER_NUM];
+#endif
     void *native_window;
     int is_android;
     /* VA_RT_FORMAT_PROTECTED is set to protected for Widevine case */

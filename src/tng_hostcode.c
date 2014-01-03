@@ -1396,7 +1396,7 @@ static void tng__setup_rcdata(context_ENC_p ctx)
     if (psPicParams->sInParams.i32BitsPerFrm) {
         i32BufferSizeInFrames = (psRCParams->ui32BufferSize + (psPicParams->sInParams.i32BitsPerFrm/2))/psPicParams->sInParams.i32BitsPerFrm;
     } else {
-        IMG_ASSERT(ctx->bEnableMvc && "Can happen only in MVC mode");
+        /* IMG_ASSERT(ctx->bEnableMvc && "Can happen only in MVC mode"); */
         /* Asigning more or less `normal` value. To be overriden by MVC RC module */
         i32BufferSizeInFrames = 30;
     }

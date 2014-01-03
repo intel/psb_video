@@ -37,7 +37,7 @@
 #include <ttm/ttm_placement.h>
 #include <linux/psb_drm.h>
 #else
-#include <psb_drm.h>
+#include <linux/vxd_drm.h>
 #endif
 
 struct _PsbDrmValidateNode {
