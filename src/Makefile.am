@@ -23,7 +23,7 @@
 #
 
 pvr_drv_video_la_LTLIBRARIES = pvr_drv_video.la
-pvr_drv_video_ladir = /usr/lib/dri
+pvr_drv_video_ladir = /usr/lib64/va/drivers
 pvr_drv_video_la_LDFLAGS = -lwsbm -pthread -module -avoid-version -Wl,--no-undefined
 if BAYTRAIL
 pvr_drv_video_la_LIBADD = -ldrm -lX11 -lXrandr -lva-x11 -lXv -lm -lXext
