@@ -36,7 +36,7 @@
 #include <wsbm/wsbm_manager.h>
 
 #ifdef BAYTRAIL
-#include <linux/vxd_drm.h>
+#include "vxd_drm.h"
 #else
 #include <ttm/ttm_placement.h>
 #include <linux/psb_drm.h>

@@ -38,7 +38,7 @@
 #include <ttm/ttm_placement.h>
 #include <linux/psb_drm.h>
 #else
-#include <linux/vxd_drm.h>
+#include "vxd_drm.h"
 #endif
 
 #include <stdint.h>

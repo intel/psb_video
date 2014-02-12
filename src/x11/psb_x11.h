@@ -39,7 +39,7 @@
 #ifndef  BAYTRAIL
 #include "psb_drm.h"
 #else
-#include <linux/vxd_drm.h>
+#include "vxd_drm.h"
 #endif
 #include "psb_surface.h"
 #include "psb_output.h"

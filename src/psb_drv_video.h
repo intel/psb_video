@@ -45,7 +45,7 @@
 //#include "psb_drv_debug.h"
 #include "xf86drm.h"
 #ifdef BAYTRAIL
-#include <linux/vxd_drm.h>
+#include "vxd_drm.h"
 #else
 #include <linux/psb_drm.h>
 #endif
