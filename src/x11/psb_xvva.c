@@ -70,8 +70,14 @@ static int GetPortId(VADriverContextP ctx, psb_x11_output_p output)
     Display *dpy = (Display *)ctx->native_dpy;
 
     ret = XvQueryAdaptors(dpy, DefaultRootWindow(dpy), &numAdapt, &info);
-    /*Force overlay port num equal to one. OverlayC can't be used independently now.*/
-    info[1].num_ports = 1;
+
+    /* check for numAdapt before modifying the info[1]. Without this check
+     * it will cause a memory corruption leading to segfaults */
+    if (numAdapt > 1)
+    {
+       /*Force overlay port num equal to one. OverlayC can't be used independently now.*/
+       info[1].num_ports = 1;
+    }
 
     if (Success != ret) {
         drv_debug_msg(VIDEO_DEBUG_ERROR, "Can't find Xvideo adaptor\n");
