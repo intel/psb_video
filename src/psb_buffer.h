@@ -142,7 +142,7 @@ void psb_buffer_destroy(psb_buffer_p buf);
  *
  * Returns 0 on success
  */
-int psb_buffer_map(psb_buffer_p buf, unsigned char **address /* out */);
+int psb_buffer_map(psb_buffer_p buf, unsigned long long **address /* out */);
 
 int psb_codedbuf_map_mangle(
     VADriverContextP ctx,
