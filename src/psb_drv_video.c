@@ -733,7 +733,7 @@ VAStatus psb_CreateSurfaces2(
                         return VA_STATUS_ERROR_INVALID_PARAMETER;
                     }
                     attribute_tpi.type = memory_type;
-                    attribute_tpi.buffers = malloc(sizeof(int) * pExternalBufDesc->num_buffers);
+                    attribute_tpi.buffers = malloc(sizeof(void*) * pExternalBufDesc->num_buffers);
                     attribute_tpi.width = pExternalBufDesc->width;
                     attribute_tpi.height = pExternalBufDesc->height;
                     attribute_tpi.count = pExternalBufDesc->num_buffers;
