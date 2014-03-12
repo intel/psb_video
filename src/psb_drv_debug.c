@@ -279,7 +279,7 @@ int psb_parse_config(char *env, char *env_value)
     env_ptr = getenv(env);
     if (env_ptr) {
         if (env_value)
-            strncpy(env_value, env_ptr, strlen(env_ptr));
+            strcpy(env_value, env_ptr);
 
         return 0;
     }
