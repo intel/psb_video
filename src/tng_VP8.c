@@ -988,7 +988,7 @@ static void tng__VP8_set_slice_param(context_VP8_p ctx) {
     //ctx->cmd_header->ui32Cmd_AdditionalParams |= ((ctx->pic_params->partition_size[0] + ((ctx->pic_params->pic_fields.bits.key_frame == 0) ? 10 : 3)) & VP8_BUFFOFFSET_MASK) ;
     //ctx->cmd_header->ui32Cmd_AdditionalParams |= ((ctx->pic_params->num_of_partitions << VP8_PARTITIONSCOUNT_SHIFT) & VP8_PARTITIONSCOUNT_MASK) ; /* if the bistream is multistream */
 
-    (*ctx->dec_ctx.cmd_params) |= ((ctx->slice_params->partition_size[0] + ((ctx->pic_params->pic_fields.bits.key_frame == 0) ? 10 : 3)) & VP8_BUFFOFFSET_MASK) ;
+    (*ctx->dec_ctx.cmd_params) |= (ctx->slice_params->partition_size[0] & VP8_BUFFOFFSET_MASK);
     (*ctx->dec_ctx.cmd_params) |= ((ctx->slice_params->num_of_partitions << VP8_PARTITIONSCOUNT_SHIFT) & VP8_PARTITIONSCOUNT_MASK) ; /* if the bistream is multistream */
     // not used in fw ctx->cmd_header->ui32Cmd_AdditionalParams |= ((ctx->pic_params->frame_type << VP8_FRAMETYPE_SHIFT) & VP8_BUFFOFFSET_MASK) ;
 }
