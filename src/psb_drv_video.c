@@ -795,7 +795,10 @@ VAStatus psb_CreateSurfaces2(
     }
     else if(memory_type !=-1 && pExternalBufDesc != NULL) {
         attribute_tpi.type = memory_type;
-        return psb_CreateSurfacesWithAttribute(ctx, width, height, format, num_surfaces, surface_list, &attribute_tpi);
+        vaStatus = psb_CreateSurfacesWithAttribute(ctx, width, height, format, num_surfaces, surface_list, &attribute_tpi);
+        if (attribute_tpi.buffers)
+            free(attribute_tpi.buffers);
+        return vaStatus;
     }
 
     format = format & (~VA_RT_FORMAT_PROTECTED);
