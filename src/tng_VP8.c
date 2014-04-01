@@ -1467,6 +1467,36 @@ static VAStatus tng_VP8_BeginPicture(
     return VA_STATUS_SUCCESS;
 }
 
+#ifdef PSBVIDEO_MSVDX_EC
+static void tng__VP8_choose_ec_frames(context_VP8_p ctx)
+{
+    ctx->obj_context->ec_target = NULL;
+    if (ctx->pic_params == NULL)
+        return;
+
+    if (ctx->pic_params->pic_fields.bits.key_frame == 0)
+    {
+        /* To conceal key frame using golden referece frame */
+        ctx->obj_context->ec_target = ctx->golden_ref_picture;
+        /* In case the next frame is an I frame we will need this */
+        ctx->obj_context->ec_candidate = ctx->obj_context->current_render_target;
+    } else {
+        /* To conceal inter frame using last reference frame */
+        ctx->obj_context->ec_target = ctx->last_ref_picture;
+    }
+
+    /* Otherwise we conceal from the previous I or P frame*/
+    if (!ctx->obj_context->ec_target)
+    {
+        ctx->obj_context->ec_target = ctx->obj_context->ec_candidate;
+    }
+
+    if (!ctx->obj_context->ec_target) {
+        ctx->obj_context->ec_target = ctx->obj_context->current_render_target;
+    }
+}
+#endif
+
 static VAStatus tng_VP8_process_buffer(
     context_DEC_p dec_ctx,
     object_buffer_p buffer) {
@@ -1515,8 +1545,8 @@ static VAStatus tng_VP8_EndPicture(
         uint32_t ext_stride_a = 0;
         object_surface_p ec_target;
 
-        //psb__VP8_choose_ec_frames(ctx);
-        ec_target = obj_surface;
+        tng__VP8_choose_ec_frames(ctx);
+        ec_target = ctx->obj_context->ec_target;
         REGIO_WRITE_FIELD_LITE(ext_stride_a, MSVDX_CMDS, EXTENDED_ROW_STRIDE, EXT_ROW_STRIDE, target_surface->stride / 64);
 
     /* FIXME ec ignor rotate condition */
