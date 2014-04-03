@@ -1535,7 +1535,7 @@ static VAStatus tng_VP8_EndPicture(
     psb_driver_data_p driver_data = obj_context->driver_data;
     VAStatus vaStatus = VA_STATUS_SUCCESS;
 
-    static object_surface_p obj_surface = NULL;
+    object_surface_p obj_surface = NULL;
     if (!obj_surface)
         obj_surface = obj_context->current_render_target;
 
@@ -1549,7 +1549,7 @@ static VAStatus tng_VP8_EndPicture(
         ec_target = ctx->obj_context->ec_target;
         REGIO_WRITE_FIELD_LITE(ext_stride_a, MSVDX_CMDS, EXTENDED_ROW_STRIDE, EXT_ROW_STRIDE, target_surface->stride / 64);
 
-    /* FIXME ec ignor rotate condition */
+        /* FIXME ec ignor rotate condition */
         if(ec_target) {
 	    if (psb_context_get_next_cmdbuf(ctx->obj_context)) {
                 vaStatus = VA_STATUS_ERROR_UNKNOWN;
