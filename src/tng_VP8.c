@@ -1404,12 +1404,6 @@ static void tng__VP8_begin_slice(context_DEC_p dec_ctx, VASliceParameterBufferBa
     VASliceParameterBufferVP8 *slice_param = (VASliceParameterBufferVP8 *) vld_slice_param;
     context_VP8_p ctx = (context_VP8_p)dec_ctx;
 
-    // follows va_vp8_dec.h clarification, recalculate parameters to internal implementation
-    // XXX: we update the user data instead of making a copy of it
-    slice_param->num_of_partitions -= 1;
-    slice_param->partition_size[0] += (slice_param->macroblock_offset+7)/8;
-    slice_param->macroblock_offset += (slice_param->slice_data_offset+1)*8;
-    slice_param->slice_data_offset = 0;
     dec_ctx->bits_offset = slice_param->macroblock_offset;
     ctx->slice_params = slice_param;
     /* dec_ctx->SR_flags = 0; */
