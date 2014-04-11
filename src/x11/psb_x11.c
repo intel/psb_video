@@ -124,7 +124,7 @@ static VAStatus psb_putsurface_x11(
     int depth;
     int x = 0, y = 0;
     VAStatus vaStatus = VA_STATUS_SUCCESS;
-    unsigned long long *surface_data = NULL;
+    uint8_t  *surface_data = NULL;
     int ret;
 
     uint32_t rmask = 0;
