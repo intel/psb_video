@@ -227,7 +227,9 @@ static VAStatus tng__yuv_processor_execute(context_DEC_p dec_ctx, object_buffer_
         ctx->coded_height = ctx->display_height;
 
         ctx->src_surface = obj_surface->psb_surface;
+#ifndef BAYTRAIL
         dec_ctx->obj_context->msvdx_rotate = vpp_params->rotation_state;
+#endif
         SET_SURFACE_INFO_rotate(rotate_surface, dec_ctx->obj_context->msvdx_rotate);
 
         ctx->proc_param = vpp_params;
@@ -526,10 +528,12 @@ VAStatus ved_QueryVideoProcPipelineCaps(
     /* check filter buffer setting */
     switch (base->type) {
     case VAProcFilterNone:
+#ifndef BAYTRAIL
         pipeline_caps->rotation_flags = (1 << VA_ROTATION_NONE);
         pipeline_caps->rotation_flags |= (1 << VA_ROTATION_90);
         pipeline_caps->rotation_flags |= (1 << VA_ROTATION_180);
         pipeline_caps->rotation_flags |= (1 << VA_ROTATION_270);
+#endif
         break;
 
     default:

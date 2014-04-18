@@ -398,6 +398,7 @@ static void tng_VP8_QueryConfigAttributes(
     int i;
     drv_debug_msg(VIDEO_DEBUG_GENERAL, "tng_VP8_QueryConfigAttributes\n");
 
+#ifndef BAYTRAIL
     for (i = 0; i < num_attribs; i++) {
         switch (attrib_list[i].type) {
         case VAConfigAttribMaxPictureWidth:
@@ -406,6 +407,7 @@ static void tng_VP8_QueryConfigAttributes(
                 attrib_list[i].value = HW_SUPPORTED_MAX_PICTURE_WIDTH_VP8;
             else
                 attrib_list[i].value = VA_ATTRIB_NOT_SUPPORTED;
+
             break;
         case VAConfigAttribMaxPictureHeight:
             if ((entrypoint == VAEntrypointVLD) &&
@@ -418,6 +420,7 @@ static void tng_VP8_QueryConfigAttributes(
             break;
         }
     }
+#endif
 
 }
 

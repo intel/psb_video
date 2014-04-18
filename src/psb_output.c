@@ -395,11 +395,13 @@ VAStatus psb_CreateImage(
         obj_image->image.pitches[0] = pitch_pot;
         obj_image->image.pitches[1] = pitch_pot;
         obj_image->image.pitches[2] = pitch_pot;
-        obj_image->image.extra_pitch = pitch_pot;
         obj_image->image.offsets[0] = 0;
         obj_image->image.offsets[1] = pitch_pot * height;
         obj_image->image.offsets[2] = pitch_pot * height * 2;
+#ifndef BAYTRAIL
         obj_image->image.extra_offset = pitch_pot * height * 3;
+        obj_image->image.extra_pitch = pitch_pot;
+#endif
         obj_image->image.num_palette_entries = 0;
         obj_image->image.entry_bytes = 0;
         obj_image->image.component_order[0] = 'V';

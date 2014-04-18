@@ -38,7 +38,9 @@
 #include "tng_cmdbuf.h"
 #include "tng_hostdefs.h"
 #include "tng_hostheader.h"
+#ifndef BAYTRAIL
 #include "tng_jpegES.h"
+#endif
 #include "tng_slotorder.h"
 
 #define tng__max(a, b) ((a)> (b)) ? (a) : (b)
@@ -461,8 +463,10 @@ struct context_ENC_s {
     uint32_t jpeg_header_mem_size;
     uint32_t jpeg_header_interface_mem_size;
 
+#ifndef BAYTRAIL
     //JPEG encode context data
     TOPAZHP_JPEG_ENCODER_CONTEXT *jpeg_ctx;
+#endif
 
     /* Save actual H263 width/height */
     IMG_UINT16 h263_actual_width;
