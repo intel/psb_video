@@ -106,7 +106,8 @@
 #define PSB_MAX_BUFFERTYPES			VABufferTypeMax
 #else
 #define PSB_MAX_PROFILES                        18
-#define PSB_MAX_ENTRYPOINTS                     VAEntrypointMax
+#define PSB_MAX_ENTRYPOINTS                     5 /* VLD, EncSlice VideoProc
+						     entry points plus 2 open */
 #define PSB_MAX_CONFIG_ATTRIBUTES               10
 #define PSB_MAX_BUFFERTYPES                     VABufferTypeMax
 #endif

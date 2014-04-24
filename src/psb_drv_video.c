@@ -186,7 +186,9 @@ VAStatus psb_QueryConfigProfiles(
     profile_list[i++] = VAProfileH264Baseline;
     profile_list[i++] = VAProfileH264Main;
     profile_list[i++] = VAProfileH264High;
+#ifndef BAYTRAIL
     profile_list[i++] = VAProfileH264StereoHigh;
+#endif
     profile_list[i++] = VAProfileVC1Simple;
     profile_list[i++] = VAProfileVC1Main;
     profile_list[i++] = VAProfileVC1Advanced;
