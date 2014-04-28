@@ -991,8 +991,8 @@ static void tng__VP8_set_slice_param(context_VP8_p ctx) {
     //ctx->cmd_header->ui32Cmd_AdditionalParams |= ((ctx->pic_params->partition_size[0] + ((ctx->pic_params->pic_fields.bits.key_frame == 0) ? 10 : 3)) & VP8_BUFFOFFSET_MASK) ;
     //ctx->cmd_header->ui32Cmd_AdditionalParams |= ((ctx->pic_params->num_of_partitions << VP8_PARTITIONSCOUNT_SHIFT) & VP8_PARTITIONSCOUNT_MASK) ; /* if the bistream is multistream */
 
-    (*ctx->dec_ctx.cmd_params) |= (ctx->slice_params->partition_size[0] & VP8_BUFFOFFSET_MASK);
-    (*ctx->dec_ctx.cmd_params) |= (((ctx->slice_params->num_of_partitions - 1) << VP8_PARTITIONSCOUNT_SHIFT) & VP8_PARTITIONSCOUNT_MASK) ; /* if the bistream is multistream */
+    (*ctx->dec_ctx.cmd_params) |= ((ctx->slice_params->partition_size[0] + ((ctx->pic_params->pic_fields.bits.key_frame == 0) ? 10 : 3)) & VP8_BUFFOFFSET_MASK);
+    (*ctx->dec_ctx.cmd_params) |= ((ctx->slice_params->num_of_partitions << VP8_PARTITIONSCOUNT_SHIFT) & VP8_PARTITIONSCOUNT_MASK) ; /* if the bistream is multistream */
     // not used in fw ctx->cmd_header->ui32Cmd_AdditionalParams |= ((ctx->pic_params->frame_type << VP8_FRAMETYPE_SHIFT) & VP8_BUFFOFFSET_MASK) ;
 }
 
@@ -1014,7 +1014,7 @@ static void tng__VP8_FE_Registers_Write(context_VP8_p ctx) {
 
         REGIO_WRITE_FIELD_LITE(reg_value, MSVDX_VEC_VP8, CR_VEC_VP8_FE_PIC0, VP8_FE_FRAME_TYPE, (ctx->pic_params->pic_fields.bits.key_frame == 0)? 0 : 1 );
         REGIO_WRITE_FIELD_LITE(reg_value, MSVDX_VEC_VP8, CR_VEC_VP8_FE_PIC0, VP8_FE_UPDATE_SEGMENTATION_MAP, (ctx->pic_params->pic_fields.bits.update_mb_segmentation_map == 0 )? 0 : 1 );
-        REGIO_WRITE_FIELD_LITE(reg_value, MSVDX_VEC_VP8, CR_VEC_VP8_FE_PIC0, VP8_FE_NUM_PARTITION_MINUS1, ctx->slice_params->num_of_partitions - 2);
+        REGIO_WRITE_FIELD_LITE(reg_value, MSVDX_VEC_VP8, CR_VEC_VP8_FE_PIC0, VP8_FE_NUM_PARTITION_MINUS1, ctx->slice_params->num_of_partitions - 1);
 
        /* SEGMENTATION ID CONTROL */
        if(ctx->pic_params->pic_fields.bits.segmentation_enabled) {
@@ -1085,7 +1085,7 @@ static void tng__VP8_FE_Registers_Write(context_VP8_p ctx) {
        /* add the first partition offset */
        psb_cmdbuf_reg_start_block(cmdbuf, 0);
 
-       ctx->DCT_Base_Address_Offset = ctx->slice_params->partition_size[0] + 3 * (ctx->slice_params->num_of_partitions - 2) ;
+       ctx->DCT_Base_Address_Offset = ctx->slice_params->partition_size[0] + 3 * (ctx->slice_params->num_of_partitions - 1) ;
        /* REGIO_WRITE_FIELD_LITE(reg_value, MSVDX_VEC_VP8, CR_VEC_VP8_FE_DCT_BASE_ADDRESS, VP8_FE_DCT_BASE_ADDRESS, ctx->DCT_Base_Address); */
        psb_cmdbuf_reg_set_address(cmdbuf, REGISTER_OFFSET (MSVDX_VEC_VP8, CR_VEC_VP8_FE_DCT_BASE_ADDRESS),
 				  ctx->dec_ctx.slice_data_buffer, ctx->DCT_Base_Address_Offset);
@@ -1407,6 +1407,12 @@ static void tng__VP8_begin_slice(context_DEC_p dec_ctx, VASliceParameterBufferBa
     VASliceParameterBufferVP8 *slice_param = (VASliceParameterBufferVP8 *) vld_slice_param;
     context_VP8_p ctx = (context_VP8_p)dec_ctx;
 
+    // follows va_vp8_dec.h clarification, recalculate parameters to internal implementation
+    // XXX: we update the user data instead of making a copy of it
+    slice_param->num_of_partitions -= 1;
+    slice_param->partition_size[0] += (slice_param->macroblock_offset+7)/8;
+    slice_param->macroblock_offset += (slice_param->slice_data_offset+1)*8;
+    slice_param->slice_data_offset = 0;
     dec_ctx->bits_offset = slice_param->macroblock_offset;
     ctx->slice_params = slice_param;
     /* dec_ctx->SR_flags = 0; */
